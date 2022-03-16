@@ -56,6 +56,8 @@ class ClientHandler extends Thread {
             try {
                 dos.writeUTF("Show Date or Time\n" + "Type exit to terminate.");
                 input = dis.readUTF();
+
+                // exit operations
                 if (input.equals("exit")) {
                     System.out.println("Client " + this.s + "sends text...");
                     System.out.println("Closing the connection.");
@@ -64,6 +66,7 @@ class ClientHandler extends Thread {
                     break;
                 }
 
+                // generate output according to client requests
                 Date date = new Date();
                 switch (input) {
                     case "Date":
@@ -83,7 +86,7 @@ class ClientHandler extends Thread {
             }
         }
 
-        // close the streams
+        // close resources
         try {
             this.dis.close();
             this.dos.close();
