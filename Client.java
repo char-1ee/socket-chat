@@ -26,8 +26,7 @@ public class Client {
         String line = "";
         while (!line.equals("exit")) {
             try {
-                line = input.readLine();
-                output.write(line);
+                output.write(input.read()); // TODO: read int rather than string
             } catch (IOException e) {
                 e.printStackTrace();
             }
