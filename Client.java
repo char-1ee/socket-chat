@@ -1,5 +1,3 @@
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -8,36 +6,46 @@ import java.net.UnknownHostException;
 
 public class Client {
     private Socket socket;
-    private BufferedInputStream input;
-    private BufferedOutputStream output;
+    private DataInputStream input;
+    private DataOutputStream output;
 
     public Client(String address, int port) {
+        // establish a connection
         try {
             socket = new Socket(address, port);
             System.out.println("Connected");
-            input = new BufferedInputStream(System.in);
-            output = new BufferedOutputStream(socket.getOutputStream());
-        } catch (UnknownHostException i) {
-            i.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            // takes input from terminal
+            input = new DataInputStream(System.in);
+
+            // sends output to the socket
+            output = new DataOutputStream(socket.getOutputStream());
+        } catch (UnknownHostException u) {
+            System.out.println(u);
+        } catch (IOException i) {
+            System.out.println(i);
         }
 
+        // string to read message from input
         String line = "";
-        while (!line.equals("exit")) {
+
+        // keep reading until "Over" is input
+        while (!line.equals("Over")) {
             try {
-                output.write(input.read()); // TODO: read int rather than string
-            } catch (IOException e) {
-                e.printStackTrace();
+                line = input.readLine();
+                output.writeUTF(line);
+            } catch (IOException i) {
+                System.out.println(i);
             }
         }
 
+        // close the connection
         try {
             input.close();
             output.close();
             socket.close();
-        } catch(IOException e) {
-            e.printStackTrace();
+        } catch (IOException i) {
+            System.out.println(i);
         }
     }
 
