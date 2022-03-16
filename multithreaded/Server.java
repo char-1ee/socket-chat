@@ -16,7 +16,7 @@ public class Server {
         ServerSocket ss = new ServerSocket(5056);
 
         while (true) {
-            Socket s = null;
+            Socket s = null; // create a new socket
             try {
                 s = ss.accept(); // receiving incoming client requests
                 System.out.println("A new client is connected: " + s);
@@ -24,10 +24,11 @@ public class Server {
                 // get I/O stream
                 DataInputStream dis = new DataInputStream(s.getInputStream());
                 DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
                 System.out.println("Assigning new thread for this client: ");
                 Thread t = new ClientHandler(s, dis, dos);
                 t.start();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 s.close();
                 e.printStackTrace();
             }
@@ -36,8 +37,8 @@ public class Server {
 }
 
 class ClientHandler extends Thread {
-    DateFormat fordate = new SimpleDateFormat("yyyy-MM-dd");
-    DateFormat fortime = new SimpleDateFormat("hh:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    DateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
     DataInputStream dis;
     DataOutputStream dos;
     Socket s;
@@ -50,12 +51,12 @@ class ClientHandler extends Thread {
 
     @Override
     public void run() {
-        String received, toreturn;
+        String input, output;
         while (true) {
             try {
                 dos.writeUTF("Show Date or Time\n" + "Type exit to terminate.");
-                received = dis.readUTF();
-                if (received.equals("exit")) {
+                input = dis.readUTF();
+                if (input.equals("exit")) {
                     System.out.println("Client " + this.s + "sends text...");
                     System.out.println("Closing the connection.");
                     this.s.close();
@@ -64,8 +65,30 @@ class ClientHandler extends Thread {
                 }
 
                 Date date = new Date();
-                
+                switch (input) {
+                    case "Date":
+                        output = dateFormat.format(date);
+                        dos.writeUTF(output);
+                        break;
+                    case "Time":
+                        output = timeFormat.format(date);
+                        dos.writeUTF(output);
+                        break;
+                    default:
+                        dos.writeUTF("Invalid input");
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
+
+        // close the streams
+        try {
+            this.dis.close();
+            this.dos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
