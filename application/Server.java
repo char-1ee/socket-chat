@@ -72,7 +72,7 @@ class ClientHandler implements Runnable {
                     break;
                 }
 
-                // break out messages
+                // break out messages (where can produce exception when string in unexpected format)
                 StringTokenizer st = new StringTokenizer(received, "#");
                 String text = st.nextToken();
                 String user = st.nextToken(); 
