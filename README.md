@@ -22,7 +22,6 @@ A group chat application realized by socket programming in java.
    ```
 5. Run `Client.java`, which sends a request to Server class, `ClientHandler` creates a new socket  
    ```
-   
    $ java Client
    ```
 4. Enter messages in a Client terminal, which can be seen in other Client terminals
